@@ -1,0 +1,5 @@
+Flask==1.0.2
+Jinja2==2.10
+psycopg2-binary==2.7.6.1
+redis==2.10.6
+urllib3==1.23
