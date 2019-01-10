@@ -17,7 +17,6 @@
                 关闭环境
                 deactivate
 #### *安装：*:
-                virtualenv --system-site-packages -p python3 ./venv （在当前目录下创建venv环境）
         1)配置configure.ini
         2)pip install -r requirements.txt （推荐新建虚拟环境）
         3)nohup python search.py &
