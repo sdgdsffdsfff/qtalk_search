@@ -2,7 +2,7 @@
 --------------------------------------------------------------------------------
 #### **准备**：
 #### *前提*:
-        python3 (3.6)
+        python3 (3以上都可以，以3.6为标准)
                 sudo yum install https://centos7.iuscommunity.org/ius-release.rpm
                 sudo yum install python36u
         pip
@@ -10,16 +10,20 @@
         外网接口/nginx等转发服务转发
         postgresql10，相关字段参考qtalk
         所需模块见requirements.txt， 建议使用virtualenv部署模块所需环境
-                sudo pip3 install -U virtualenv （安装virtualenv）
-                virtualenv --system-site-packages -p python3 ./venv （在当前目录下创建venv环境）
+                sudo pip install -U virtualenv （安装virtualenv）
+                sudo pip install --upgrade pip
+                virtualenv --system-site-packages -p python3.6 ./venv （在当前目录下创建venv环境）
                 启动环境
                 source venv/bin/activate
-                关闭环境
-                deactivate
+
 #### *安装：*:
-        1)配置configure.ini
+        1)配置conf/configure.ini
         2)pip install -r requirements.txt （推荐新建虚拟环境）
-        3)nohup python search.py &
+        3)export PYTHONPATH=path/to/project/qtalk_search:$PYTHONPATH
+        4)cd path/to/project/qtalk_search
+        5)nohup python3.6 search.py &
+        6)deactivate(退出环境)
+        
 --------------------------------------------------------------------------------
 #### **请求**
 #### *POST( application/json )*:
@@ -56,8 +60,8 @@
                             "icon": "aaa.jpg",
                             "label": "个人签名",
                             "name": "张三",
-                            "qtalkname": "jingyu.he",
-                            "uri": "jingyu.he@domain"
+                            "qtalkname": "gtouchgogo",
+                            "uri": "gtouchgogo@domain"
                         }
                     ],
                     "todoType": 0
