@@ -9,7 +9,7 @@
 #### *安装：*:
         1)配置configure.ini
         2)pip install -r requirements.txt （推荐新建虚拟环境）
-        3)nohup python search.py &<br />
+        3)nohup python search.py &
 --------------------------------------------------------------------------------
 #### **请求**
 #### *POST( application/json )*:
@@ -28,8 +28,8 @@
             qtalkId :  搜索人qtalk id
             cKey    :  xxxxxxxx ckey规则
             groupid :  Q01-Q07 限定搜索内容
-            length   :  用于分页长度
-            start  :  用于分页起始<br />
+            start   :  偏移量
+            length  :  长度
 #### **返回**:
         application / json
         {
