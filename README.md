@@ -1,17 +1,16 @@
-#### ***文中链接各位根据自己项目对应修改***
---------------------------------------------------------------------------------
-#### **项目管理**：
-#### *PMO*:(http://pmo.corp.qunar.com)<br />
---------------------------------------------------------------------------------
-#### **CI/CD**:
-#### *QDR*:(http://qdr.corp.qunar.com/)<br />
-#### *QCI*:(http://qci.corp.qunar.com/)<br />
-#### *CABLE*:(http://wanshiwu.corp.qunar.com/qualitycheck/index/)<br />
+线上环境
+l-qtalktv1.vc.cn6 /home/q/www/python/backend-python
+l-qtalktv2.vc.cn6 /home/q/www/python/backend-python
+python环境
+source /home/q/www/python/.venv/backendvenv/bin/activate
 
---------------------------------------------------------------------------------
-#### **质量管理**:
-#### *bugfree*:(http://svn.corp.qunar.com/bugfree)<br />
-#### *case*:(http://bugfree.corp.qunar.com/bugfree/index.php/case)<br />
---------------------------------------------------------------------------------
-#### **项目信息**:
-#### *wiki*:(http://wiki.corp.qunar.com/)<br />
+测试环境
+l-ejab6.vc.cn5 /home/q/www/backend-python
+python环境
+/home/q/www/backend-python/venv/bin/activate
+
+发布
+#切换账号， 后续看情况要不要更改成公用账号/root
+sudo sudo su - jingyu.he
+~/backend.sh
+
