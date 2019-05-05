@@ -23,8 +23,6 @@ if is_check_ckey:
     from utils.authorization import check_ckey
 single_portrait = config['qtalk']['single_portrait']
 muc_portrait = config['qtalk']['muc_portrait']
-# service_host = config['qtalk']['app_host']
-# service_port = config['qtalk']['app_port']
 
 # -------------------------- 既定的配置 --------------------------
 userGroup = 'Q01'

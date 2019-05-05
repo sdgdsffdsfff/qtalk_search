@@ -4,9 +4,6 @@ from utils.get_conf import get_logger_file, get_config_file
 
 config = get_config_file()
 
-beta_url = 'http://l-im3.vc.beta.cn0.qunar.com:8031/innerpackage/check/meeting/meeting_info.qunar'
-online_url = 'http://qtalk.corp.qunar.com/innerpackage/check/meeting/meeting_info.qunar'
-
 # service_host = config['sharemsg']['app_host']
 # service_port = config['sharemsg']['app_port']
 
