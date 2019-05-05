@@ -9,9 +9,9 @@ if_redis_sentinel = config['redis'].getboolean('if_sentinel')
 # r_domain = config['qtalk']['domain']
 is_check_ckey = config['qtalk'].getboolean('ckey_check')
 
-info_beatUrl = 'http://l-im3.vc.beta.cn0.qunar.com:8031/innerpackage/check/meeting/meeting_info.qunar'
+info_beatUrl = ''
 info_onlineUrl = 'http://qtalk.corp.qunar.com/innerpackage/check/meeting/meeting_info.qunar'
-action_betaUrl = 'http://l-im3.vc.beta.cn0.qunar.com:8031/innerpackage/check/meeting/meeting_action.qunar';
+action_betaUrl = '';
 action_onlineUrl = 'http://qtalk.corp.qunar.com/innerpackage/check/meeting/meeting_action.qunar';
 
 if if_redis_sentinel:
