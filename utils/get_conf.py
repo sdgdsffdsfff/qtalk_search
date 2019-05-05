@@ -1,7 +1,8 @@
-# -*- encoding:utf-8 -*-
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+__author__ = 'jingyu.he'
 import os
 import configparser
-import datetime
 
 
 def get_config_file():
@@ -12,8 +13,8 @@ def get_config_file():
     return config
 
 
-def get_logger_file():
+def get_logger_file(name=''):
     project_dir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-    tt = datetime.datetime.today()
-    logger_path = project_dir + '/log/' + str(tt.year) + '_' + str(tt.month) + '_' + str(tt.day)
+    logger_path = project_dir + '/log/' + name
     return logger_path
+

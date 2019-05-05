@@ -9,7 +9,7 @@
                 sudo yum -y install python-pip
         外网接口/nginx等转发服务转发
         postgresql10，相关字段参考qtalk
-        所需模块见requirements.txt， 建议使用virtualenv部署模块所需环境
+        所需模块见requirements.txt， 单独部署建议使用virtualenv部署模块所需环境
                 sudo pip install -U virtualenv （安装virtualenv）
                 sudo pip install --upgrade pip
                 virtualenv --system-site-packages -p python3.6 ./venv （在当前目录下创建venv环境）
@@ -21,7 +21,7 @@
         2)pip install -r requirements.txt （推荐新建虚拟环境）
         3)export PYTHONPATH=path/to/project/qtalk_search:$PYTHONPATH
         4)cd path/to/project/qtalk_search
-        5)nohup python3.6 search.py 1>/dev/null 2>/dev/null &
+        5)nohup python3.6 search.py &
         6)deactivate(退出环境)
         
 --------------------------------------------------------------------------------
@@ -42,8 +42,8 @@
             qtalkId :  搜索人qtalk id
             cKey    :  xxxxxxxx ckey规则
             groupid :  Q01-Q07 限定搜索内容
-            start   :  偏移量
-            length  :  长度
+            length   :  用于分页长度
+            start  :  用于分页起始
 #### **返回**:
         application / json
         {
@@ -101,10 +101,10 @@
             ],
             "errcode": 0,
             "msg": ""
-        }<br />
+        }
 --------------------------------------------------------------------------------
 #### **其它**:
-#### *配置文件*:(search/conf/configure.ini)<br />
-#### *日志配置文件*:(search/utils/logger_conf.py)<br />
-#### *日志文件*:(search/log/yyyy_mm_dd_{module}.log)<br />
+#### *配置文件*:(search/conf/configure.ini)
+#### *日志配置文件*:(search/utils/logger_conf.py)
+#### *日志文件*:(search/log/{module}.log)
         为了避免日志过于冗长，日志会打印当前请求用户的userid+ckey并且打印上一个ip的最后一次请求
