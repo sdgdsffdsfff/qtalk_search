@@ -1,14 +1,14 @@
 # -*- encoding:utf-8 -*-
 
-from flask import Blueprint, request, jsonify
+from flask import Flask, request, jsonify
 import json
 from utils.request_util import RequestUtil
 from utils.common_sql import UserLib
 from utils.get_conf import get_config_file, get_logger_file
 from utils.logger_conf import configure_logger
 
-search_blueprint = Blueprint('search', __name__)
-
+app = Flask(__name__)
+app.debug = True
 
 # -------------------------- 生成logger --------------------------
 log_path = get_logger_file()
@@ -23,6 +23,8 @@ if is_check_ckey:
     from utils.authorization import check_ckey
 single_portrait = config['qtalk']['single_portrait']
 muc_portrait = config['qtalk']['muc_portrait']
+service_host = config['qtalk']['app_host']
+service_port = config['qtalk']['app_port']
 
 # -------------------------- 既定的配置 --------------------------
 userGroup = 'Q01'
@@ -46,7 +48,7 @@ ip = str()
 s_args = dict()
 
 
-@search_blueprint.route('/search', methods=['GET', 'POST'])
+@app.route('/search.py', methods=['GET', 'POST'])
 def main():
     global ip, s_args
     args = RequestUtil.get_request_args(request)
@@ -64,8 +66,8 @@ def main():
     offset = int(args.get("start", 0))
     limit = int(args.get("length", 5))
     if is_check_ckey:
-        res = check_ckey(ckey, user_id)
-        if not res:
+        res, user = check_ckey(ckey, user_id)
+        if not res or (user != user_id):
             logger.error('{} login FAILED. ckey : {}'.format(user_id, ckey))
             return jsonify(ret=0, message="ckey failed")
 
@@ -82,20 +84,23 @@ def main():
             user_array = userlib.search_user(username, user_id, limit + 1, offset)
             has_more, user_array = get_hasmore(user_array, limit)
             if user_array:
-                result = make_result(label='联系人列表', groupid=userGroup, group_priority=0, todo_type=QTALK_OPEN_USER_VCARD,
-                                 portrait=single_portrait, hasmore=has_more, info=user_array)
+                result = make_result(label='联系人列表', groupid=userGroup, group_priority=0,
+                                     todo_type=QTALK_OPEN_USER_VCARD,
+                                     portrait=single_portrait, hasmore=has_more, info=user_array)
         elif group_id == groupGroup:
             group_array = userlib.search_group(user_id, username, limit + 1, offset)
             has_more, group_array = get_hasmore(group_array, limit)
             if group_array:
-                result = make_result(label='群组列表', groupid=groupGroup, group_priority=0, todo_type=QTALK_OPEN_GROUP_VCARD,
-                                 portrait=muc_portrait, hasmore=has_more, info=group_array)
+                result = make_result(label='群组列表', groupid=groupGroup, group_priority=0,
+                                     todo_type=QTALK_OPEN_GROUP_VCARD,
+                                     portrait=muc_portrait, hasmore=has_more, info=group_array)
         elif group_id == commonGroup:
             commonmuc_array = userlib.search_group_by_single(user_id, username, limit + 1, offset)
             has_more, commonmuc_array = get_hasmore(commonmuc_array, limit)
             if commonmuc_array:
-                result = make_result(label='共同群组', groupid=commonGroup, group_priority=0, todo_type=QTALK_OPEN_GROUP_VCARD,
-                                 portrait=muc_portrait, hasmore=has_more, info=commonmuc_array)
+                result = make_result(label='共同群组', groupid=commonGroup, group_priority=0,
+                                     todo_type=QTALK_OPEN_GROUP_VCARD,
+                                     portrait=muc_portrait, hasmore=has_more, info=commonmuc_array)
         else:
             return jsonify(errcode=500, msg='无法预期的groupId')
         userlib.conn.close()
@@ -149,6 +154,6 @@ def get_hasmore(array, limit=5):
     else:
         return has_more, array
 
-#
-# if __name__ == '__main__':
-#     app.run(host=service_host, port=service_port, debug=True)
+
+if __name__ == '__main__':
+    app.run(host=service_host, port=service_port, debug=True)
