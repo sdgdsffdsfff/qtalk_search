@@ -21,8 +21,13 @@
         2)pip install -r requirements.txt （推荐新建虚拟环境）
         3)export PYTHONPATH=path/to/project/qtalk_search:$PYTHONPATH
         4)cd path/to/project/qtalk_search
-        5)nohup python3.6 search.py 1>/dev/null 2>/dev/null &
-        6)deactivate(退出环境)
+        5)supervisord -c conf/supervisor.conf
+        6)supervisorctl -c conf/supervisor.conf reload
+       
+#### *确认服务开启：*:
+        确保日志无报错
+        tail -f log/access.log
+
         
 --------------------------------------------------------------------------------
 #### **请求**
