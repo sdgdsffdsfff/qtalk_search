@@ -38,7 +38,7 @@ def check_ckey(ckey,puser = ''):
     if not isinstance(ckey, str):
         ckey = str(ckey)
     if len(ckey) <= 0:
-        return False
+        return False, None
     try:
         ckey_parse = base64.b64decode(ckey).decode('utf-8')
         result = parse_qs(ckey_parse)
