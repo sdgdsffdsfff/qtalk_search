@@ -17,7 +17,7 @@ from utils.logger_conf import configure_logger
 
 log_path = get_logger_file()
 log_path = log_path + 'sharemsg.log'
-logger = configure_logger('sharemsg', log_path)
+sharemsg_logger = configure_logger('sharemsg', log_path)
 
 sharemsg_blueprint = Blueprint('sharemsg', __name__, template_folder='../../templates', static_folder='../../static')
 
@@ -33,6 +33,7 @@ def authorization(func):
         res = False
         if is_check_ckey:
             ckey = request_util.get_ckey(request)
+            sharemsg_logger.debug("user {} , get ckey : {}".format(user_id, ckey))
             if ckey:
                 if auth_ckey_url:
                     try:
@@ -47,7 +48,7 @@ def authorization(func):
                             res = True
                             user_id = ret.json().get('data').get('u')
                     except (requests.RequestException or KeyError) as e:
-                        logger.error("ckey api failed : {}".format(e))
+                        sharemsg_logger.error("ckey api failed : {}".format(e))
                         # TODO notify developer to check
                         # res = check_ckey(ckey, user_id)
                         res, user_id = check_ckey(ckey)
@@ -55,11 +56,12 @@ def authorization(func):
                     except Exception as e:
                         logger.error("ckey api failed : {}".format(e))
                 else:
+                    sharemsg_logger.debug("user {} , get ckey : {}".format(user_id, ckey))
                     res, user_id = check_ckey(ckey)
             if res:
                 return func(user_id=user_id, *args, **kw)
             else:
-                logger.info("user:{user} login failed, ckey : {ckey}, \
+                sharemsg_logger.info("user:{user} login failed, ckey : {ckey}, \
                                                 ".format(user=user_id, ckey=ckey))
                 return jsonify(ret=0, message="ckey check failed")
         return func(user_id=user_id, *args, **kw)
@@ -71,7 +73,7 @@ def authorization(func):
 @sharemsg_blueprint.route('sharemsg')
 @authorization
 def main(user_id):
-    logger.info("Get request from " + user_id)
+    sharemsg_logger.info("Get request from " + user_id)
     handler = GenerateShareMsg()
     content = handler.show()
     return render_template('sharemsg_template.html', content=content)
@@ -116,8 +118,7 @@ class GenerateShareMsg:
             try:
                 data_url = base64.b64decode(jdata)
             except Exception as e:
-                logger.error(e)
-                logger.error("Cant decode base64 :" + jdata)
+                sharemsg_logger.exception("Cant decode base64 :" + jdata)
                 return
         result = requests.get(data_url)
         if not result.ok:
@@ -125,7 +126,7 @@ class GenerateShareMsg:
         try:
             content = json.loads(result.text)
         except Exception as e:
-            logger.error("Json load failed \n {}".format(e))
+            sharemsg_logger.exception("Json load failed \n {}".format(e))
             return
         main_region = ""
         content.sort(key=lambda x: x['s'])
@@ -138,9 +139,3 @@ class GenerateShareMsg:
             main_region += speaker_div + "</div>"
         return main_region
 
-# if __name__ == '__main__':
-#     # app.config.update(
-#     #     port=service_port,
-#     #     SERVER_NAME=service_host
-#     # )
-#     sharemsg.run(host=service_host, port=service_port)
