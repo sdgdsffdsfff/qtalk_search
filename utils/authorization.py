@@ -38,12 +38,13 @@ def check_ckey(ckey,puser = ''):
     if not isinstance(ckey, str):
         ckey = str(ckey)
     if len(ckey) <= 0:
-        return False
+        return False, None
     try:
         ckey_parse = base64.b64decode(ckey).decode('utf-8')
         result = parse_qs(ckey_parse)
         # user = result['u'][0]
         user = result.get('u')
+
         if isinstance(user, list):
             user = user[0]
         if puser:
@@ -59,9 +60,6 @@ def check_ckey(ckey,puser = ''):
         _time = result.get('t')
         if isinstance(_time, list):
             _time = _time[0]
-        tar = result['k']
-        if isinstance(tar, list):
-            tar = tar[0]
         if domain == r_domain:
             user_keys = redis_cli.hkeys(user)
             if isinstance(user_keys, list):
@@ -69,20 +67,11 @@ def check_ckey(ckey,puser = ''):
                     i = str(i) + str(_time)
                     i = md5(i)
                     i = str(i).upper()
-                    if i == str(tar):
+                    if i == str(result['k'][0]):
                         if g_user != user:
                             g_user = user
                             author_log.info('user = {} , ckey = {} login success!'.format(result['u'][0], ckey))
                         return True, user
-            elif isinstance(user_keys, (str,int)):
-                i = str(user_keys) + str(_time)
-                i = md5(i)
-                i = str(i).upper()
-                if i == str(tar):
-                    if g_user != user:
-                        g_user = user
-                        author_log.info('user = {} , ckey = {} login success!'.format(result['u'][0], ckey))
-                return True, user
             else:
                 return False, user
             return False, user
