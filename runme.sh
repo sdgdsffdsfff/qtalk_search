@@ -18,16 +18,16 @@ fi
 # 检查项目版本
 cd /startalk/qtalk_search
 GIT_TAG=`git describe`
-if [ GIT_TAG = "2.0" ];then
+if [ $GIT_TAG = "v2.0" ];then
   echo "项目为2.0"
 else
   echo "################################"
   echo "项目过期, 正在获取最新项目"
   echo "################################"
-  cd /startalk/qtalk_search && git pull && git pull --tags
-  git checkout v2.0
+  cd /home/binz.zhang/qtalk_search && git fetch --tags && git checkout v2.0
+
   GIT_TAG=`git describe`
-  if [ GIT_TAG = "2.0" ];then
+  if [ $GIT_TAG = "v2.0" ];then
     echo "获取最新代码成功"
   else
     echo "获取最新代码失败, 请解决git冲突并再次运行脚本"
@@ -76,9 +76,6 @@ else
    echo "################################"
    echo "python配置完成...."
    echo "################################"
-   cd /startalk/qtalk_search
-   /startalk/qtalk_search/venv/python/bin/pip3 install virtualenv
-   virtualenv --system-site-packages -p /startalk/qtalk_search/venv/python/bin/python3.7 ./venv
    CHECK_PYTHON=`python3.7 -V`
    if [ $? -eq 0 ];then
    echo "################################"
@@ -90,8 +87,16 @@ else
    echo "################################"
    fi
    echo "################################"
-
  fi
+fi
+
+# 检查虚拟环境
+if [ ! -d "/startalk/qtalk_search/venv" ]; then
+   cd /startalk/qtalk_search
+   /startalk/qtalk_search/venv/python/bin/pip3 install virtualenv
+   virtualenv --system-site-packages -p /startalk/qtalk_search/venv/python/bin/python3.7 ./venv
+   source /startalk/qtalk_search/venv/python/bin/activate
+   pip3 install -r /startalk/qtalk_search/requirements.txt
 fi
 
 # 检查服务状态
