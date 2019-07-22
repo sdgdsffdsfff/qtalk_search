@@ -42,11 +42,7 @@ if [ $? -eq 0 ];then
  echo "python3.7 已安装于系统"
  echo "################################"
 else
- if [ ! -x "/startalk/qtalk_search/venv/bin/python3.7" ]; then
-   echo "################################"
-   echo "python3.7 已安装于系统"
-   echo "################################"
- else
+ if [ ! -f "/startalk/qtalk_search/venv/bin/python3.7" ]; then
    echo "################################"
    echo "python3.7 未安装, 即将安装python3.7"
    echo "################################"
@@ -54,10 +50,12 @@ else
    echo "下载python3.7....7"
    echo "################################"
    cd /tmp
-   wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz
-   echo "################################"
-   echo "解压中...."
-   echo "################################"
+   if [ ! -f "/tmp/Python-3.7.4.tgz" ]; then
+     wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz
+     echo "################################"
+     echo "解压中...."
+     echo "################################"
+   fi
    tar zxvf Python-3.7.4.tgz
    echo "################################"
    echo "配置python环境...."
@@ -68,40 +66,39 @@ else
    cd ./Python-3.7.4
    read -p "是否将python3.7独立安装(默认为y)?" yn
    case $yn in
-           [Yy]* ) ./configure;;
-           [Nn]* ) ./configure --prefix /startalk/qtalk_search/venv/python/;echo "安装python3.7于/startalk/qtalk_search/venv/python/";;
-           * ) ./configure;;
+           [Yy]* ) ./configure --prefix /startalk/qtalk_search/venv/python/;echo "安装python3.7于/startalk/qtalk_search/venv/python/";make && make altinstall;/startalk/qtalk_search/venv/python/bin/python3.7 -V;;
+           [Nn]* ) ./configure;make && make install;python3.7 -V;;
+           * ) ./configure --prefix /startalk/qtalk_search/venv/python/;echo "安装python3.7于/startalk/qtalk_search/venv/python/";make && make altinstall;/startalk/qtalk_search/venv/python/bin/python3.7 -V;;
    esac
-   make && make altinstall
-   echo "################################"
-   echo "python配置完成...."
-   echo "################################"
-   CHECK_PYTHON=`python3.7 -V`
    if [ $? -eq 0 ];then
    echo "################################"
    echo "python3.7 已安装于系统"
    echo "################################"
    else
    echo "################################"
-   echo "python3.7 未安装, 即将安装python3.7"
+   echo "python3.7 安装失败 请检查报错"
    echo "################################"
    fi
+   echo "################################"
+ else
+   echo "################################"
+   echo "python3.7 已安装于系统"
    echo "################################"
  fi
 fi
 
 # 检查虚拟环境
-if [ ! -d "/startalk/qtalk_search/venv" ]; then
+if [ ! -d "/startalk/qtalk_search/venv" ] || [ ! -f "/startalk/qtalk_search/venv/bin/activate" ]; then
    cd /startalk/qtalk_search
-   /startalk/qtalk_search/venv/python/bin/pip3 install virtualenv
-   virtualenv --system-site-packages -p /startalk/qtalk_search/venv/python/bin/python3.7 ./venv
-   source /startalk/qtalk_search/venv/python/bin/activate
+   /startalk/qtalk_search/venv/python/bin/pip3.7 install virtualenv
+   /startalk/qtalk_search/venv/python/bin/virtualenv  --system-site-packages -p /startalk/qtalk_search/venv/python/bin/python3.7 ./venv
+   source /startalk/qtalk_search/venv/bin/activate
    pip3 install -r /startalk/qtalk_search/requirements.txt
 fi
 
 # 检查服务状态
-
 source /startalk/qtalk_search/venv/bin/activate
+pip3 install -r /startalk/qtalk_search/requirements.txt
 supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
 SERVICE_RESULT=`supervisorctl -c conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
 if [ $SERVICE_RESULT = "RUNNING" ]; then
