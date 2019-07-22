@@ -8,9 +8,12 @@
     source /home/q/www/python/.venv/backendvenv/bin/activate
 
 #### **测试环境**:
-    l-ejab6.vc.cn5 /home/q/www/backend-python
+    l-qtalktv5.vc.cn6 /home/q/www/python/backend-python
     python环境
-    /home/q/www/backend-python/venv/bin/activate
+    /home/q/www/python/.venv/backendvenv/bin/activate
+
+#### **更多**:
+    https://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=272829912
 
 --------------------------------------------------------------------------------
 
