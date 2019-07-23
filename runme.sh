@@ -99,25 +99,45 @@ fi
 # 检查服务状态
 source /startalk/qtalk_search/venv/bin/activate
 pip3 install -r /startalk/qtalk_search/requirements.txt
-supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
-SERVICE_RESULT=`supervisorctl -c conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
-if [ $SERVICE_RESULT = "RUNNING" ]; then
-  ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
-  if [ ECHO_RESULT = "OK" ]; then
-    echo "################################"
-    echo "服务正常启动"
-    echo "################################"
-  else
-    echo "################################"
-    echo "服务echo失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
-    echo "################################"
-    cat /startalk/qtalk_search/log/access.log | head -n 20
-  fi
+
+ps -ef|grep supervisord|grep qtalk_search
+if [ $? -eq 0 ];then
+    supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
+    SERVICE_RESULT=`supervisorctl -c conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
+    if [ $SERVICE_RESULT = "RUNNING" ]; then
+      ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
+      if [ ECHO_RESULT = "OK" ]; then
+        echo "################################"
+        echo "服务正常启动"
+        echo "################################"
+      else
+        echo "################################"
+        echo "服务echo失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
+        echo "################################"
+        cat /startalk/qtalk_search/log/access.log | head -n 20
+      fi
+    else
+      echo "################################"
+      echo "服务启动失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
+      echo "################################"
+      cat /startalk/qtalk_search/log/access.log | head -n 20
+    fi
 else
-  echo "################################"
-  echo "服务启动失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
-  echo "################################"
-  cat /startalk/qtalk_search/log/access.log | head -n 20
+   supervisord -c /startalk/qtalk_search/conf/supervisor.conf
+   SERVICE_RESULT=`supervisorctl -c conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
+   if [ $SERVICE_RESULT = "RUNNING" ]; then
+      ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
+      if [ ECHO_RESULT = "OK" ]; then
+        echo "################################"
+        echo "服务正常启动"
+        echo "################################"
+      else
+        echo "################################"
+        echo "服务echo失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
+        echo "################################"
+        cat /startalk/qtalk_search/log/access.log | head -n 20
+      fi
+   fi
 fi
 exit 0
 
