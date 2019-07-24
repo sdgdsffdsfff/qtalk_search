@@ -24,7 +24,12 @@ else
   echo "################################"
   echo "项目过期, 正在获取最新项目"
   echo "################################"
-  cp /startalk/qtalk_search/conf/configure.ini /tmp/configure.ini.bak
+  if [ ! -f "/tmp/configure.ini.bak" ]; then
+      cp /startalk/qtalk_search/conf/configure.ini /tmp/configure.ini.bak
+  else
+      rm /tmp/configure.ini.bak
+      cp /startalk/qtalk_search/conf/configure.ini /tmp/configure.ini.bak
+  fi
   cd /startalk/qtalk_search && git fetch --tags && git checkout v2.0
   cp /tmp/configure.ini.bak /startalk/qtalk_search/conf/configure.ini
   GIT_TAG=`git describe`
@@ -58,7 +63,12 @@ else
      echo "解压中...."
      echo "################################"
    fi
-   tar zxf Python-3.7.4.tgz
+   if [ ! -d "/tmp/Python-3.7.4" ]; then
+     tar zxf Python-3.7.4.tgz
+   else
+     rm -rf /tmp/Python-3.7.4
+     tar zxf Python-3.7.4.tgz
+   fi
    echo "################################"
    echo "配置python环境...."
    echo "################################"
@@ -91,8 +101,13 @@ fi
 # 检查虚拟环境
 if [ ! -d "/startalk/qtalk_search/venv" ] || [ ! -f "/startalk/qtalk_search/venv/bin/activate" ]; then
    cd /startalk/qtalk_search
-   /startalk/qtalk_search/venv/python/bin/pip3.7 install virtualenv
-   /startalk/qtalk_search/venv/python/bin/virtualenv  --system-site-packages -p /startalk/qtalk_search/venv/python/bin/python3.7 ./venv
+   if [ ! -f "/startalk/qtalk_search/venv/python/bin/pip3.7" ]; then
+       pip3.7 install virtualenv
+       virtualenv --system-site-packages -p python3.7 ./venv
+   else
+       /startalk/qtalk_search/venv/python/bin/pip3.7 install virtualenv
+       /startalk/qtalk_search/venv/python/bin/virtualenv  --system-site-packages -p /startalk/qtalk_search/venv/python/bin/python3.7 ./venv
+   fi
    source /startalk/qtalk_search/venv/bin/activate
    pip3 install -r /startalk/qtalk_search/requirements.txt
 fi
