@@ -1,5 +1,5 @@
-#### 目前搜索已升级为python3.7 tag为v2.0
-####请执行 git pull && chmod 755 ./runme.sh && ./runme.sh
+#### 目前搜索已升级为python3.7 tag为v2.0 需要openssl version >= 1.02
+####请执行 git pull && ./runme.sh
 
 
 #### ***搜索系统***
