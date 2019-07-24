@@ -24,7 +24,7 @@ else
   echo "################################"
   echo "项目过期, 正在获取最新项目"
   echo "################################"
-  cd /home/binz.zhang/qtalk_search && git fetch --tags && git checkout v2.0
+  cd /startalk/qtalk_search && git fetch --tags && git checkout v2.0
 
   GIT_TAG=`git describe`
   if [ $GIT_TAG = "v2.0" ];then
