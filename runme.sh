@@ -24,8 +24,9 @@ else
   echo "################################"
   echo "项目过期, 正在获取最新项目"
   echo "################################"
+  cp /startalk/qtalk_search/conf/configure.ini /tmp/configure.ini.bak
   cd /startalk/qtalk_search && git fetch --tags && git checkout v2.0
-
+  cp /tmp/configure.ini.bak /startalk/qtalk_search/conf/configure.ini
   GIT_TAG=`git describe`
   if [ $GIT_TAG = "v2.0" ];then
     echo "获取最新代码成功"
