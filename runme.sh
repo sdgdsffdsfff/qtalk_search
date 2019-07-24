@@ -30,6 +30,7 @@ else
       rm /tmp/configure.ini.bak
       cp /startalk/qtalk_search/conf/configure.ini /tmp/configure.ini.bak
   fi
+  git checkout conf/configure.ini
   cd /startalk/qtalk_search && git fetch --tags && git checkout v2.0
   cp /tmp/configure.ini.bak /startalk/qtalk_search/conf/configure.ini
   GIT_TAG=`git describe`
