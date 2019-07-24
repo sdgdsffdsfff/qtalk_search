@@ -31,8 +31,8 @@ ckey验证用
 if_redis_sentinel = config['redis'].getboolean('if_sentinel')
 r_domain = config['qtalk']['domain']
 is_check_ckey = config['qtalk'].getboolean('ckey_check')
-single_portrait = config['qtalk']['single_portrait']
-muc_portrait = config['qtalk']['muc_portrait']
+single_portrait = config['sharemsg']['file_url'] + config['qtalk']['single_portrait']
+muc_portrait = config['sharemsg']['file_url'] + config['qtalk']['muc_portrait']
 # service_host = config['qtalk']['app_host']
 # service_port = config['qtalk']['app_port']
 
