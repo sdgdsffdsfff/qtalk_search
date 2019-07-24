@@ -89,6 +89,7 @@ else
    echo "################################"
    echo "python3.7 安装失败 请检查报错"
    echo "################################"
+   exit 0
    fi
    echo "################################"
  else
@@ -119,7 +120,8 @@ pip3 install -r /startalk/qtalk_search/requirements.txt
 ps -ef|grep supervisord|grep qtalk_search
 if [ $? -eq 0 ];then
     ps aux | grep supervisord | grep -v "grep" | awk -F' ' '{print $2}'| xargs -I {} sudo kill {}
-    supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
+    supervisord -c /startalk/qtalk_search/conf/supervisor.conf
+#    supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
     SERVICE_RESULT=`supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
     if [ $SERVICE_RESULT = "RUNNING" ]; then
       ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
