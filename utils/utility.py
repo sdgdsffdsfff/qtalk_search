@@ -134,13 +134,14 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Secondes'] + '秒,点击下载</a>'
+        body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Seconds'] + '秒,点击下载</a>'
         return body
 
     # def parse_im_emotion(self,body):
     #     _pattern = re.compile(r'\[obj type="([\w]+)" value="([\S]+)"([\w|=|\s|.]+)?\]')
     #     arr = _pattern.findall(body)
     #     if arr:
+    
     #         all_obj = arr[0]
     #
     #     body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Secondes'] + '秒,点击下载</a>'

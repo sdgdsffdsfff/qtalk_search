@@ -24,7 +24,7 @@ else
   echo "################################"
   echo "项目过期, 正在获取最新项目"
   echo "################################"
-  cd /home/binz.zhang/qtalk_search && git fetch --tags && git checkout v2.0
+  cd /startalk/qtalk_search && git fetch --tags && git checkout v2.0
 
   GIT_TAG=`git describe`
   if [ $GIT_TAG = "v2.0" ];then
@@ -56,12 +56,11 @@ else
      echo "解压中...."
      echo "################################"
    fi
-   tar zxvf Python-3.7.4.tgz
+   tar zxf Python-3.7.4.tgz
    echo "################################"
    echo "配置python环境...."
    echo "################################"
-   sudo yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel
-   readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+   sudo yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
    sudo yum install -y libffi-devel zlib-devel
    cd ./Python-3.7.4
    read -p "是否将python3.7独立安装(默认为y)?" yn
@@ -103,7 +102,7 @@ pip3 install -r /startalk/qtalk_search/requirements.txt
 ps -ef|grep supervisord|grep qtalk_search
 if [ $? -eq 0 ];then
     supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
-    SERVICE_RESULT=`supervisorctl -c conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
+    SERVICE_RESULT=`supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
     if [ $SERVICE_RESULT = "RUNNING" ]; then
       ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
       if [ ECHO_RESULT = "OK" ]; then
@@ -124,7 +123,7 @@ if [ $? -eq 0 ];then
     fi
 else
    supervisord -c /startalk/qtalk_search/conf/supervisor.conf
-   SERVICE_RESULT=`supervisorctl -c conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
+   SERVICE_RESULT=`supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
    if [ $SERVICE_RESULT = "RUNNING" ]; then
       ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
       if [ ECHO_RESULT = "OK" ]; then
