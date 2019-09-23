@@ -25,11 +25,13 @@ class Utility:
         self.time_div = '<div style="text-align:center"><span class="time_container">{timestamp}</span></div>'
         self.rightd_div = '<div class="rightd"><div class="main"><div class="speech right">{content}</div></div><div class="rightimg">{name}</div></div>'
         self.lefttd_div = '<div class="leftd"><div class="leftimg">{name}</div><div class="main"><div class="speech left">{content}</div></div></div>'
-
-    def handle_else_msg(self):
+  
+    def handle_else_msg(self, else_msg):
+        print("cant share {}".format(else_msg))
         return CANT_SHARE_MSG
 
-    def no_type_error(self):
+    def no_type_error(self, else_msg):
+        print("error share {}".format(else_msg))
         raise ValueError
 
     def handle_sharemsg_timeinterval(self, msg):
@@ -65,8 +67,10 @@ class Utility:
         _keys = msg.keys()
         if 'n' not in _keys or 'b' not in _keys or 's' not in _keys or 'd' not in _keys:
             return msg
-
-        result = self.MESSAGE_TYPE[msg.get('t', 'ELSE')](msg.get('b', 'ELSE'))
+        
+        _msg_type = msg.get('t', 'ELSE')
+        _handle_type = self.MESSAGE_TYPE.get(_msg_type, self.MESSAGE_TYPE.get('ELSE'))
+        result = _handle_type(msg.get('b', 'ELSE'))
 
         return result
 
