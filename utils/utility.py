@@ -6,7 +6,6 @@ import json
 import time
 from conf.sharemsg_params_define import *
 
-
 class Utility:
     def __init__(self):
         self.MESSAGE_TYPE = {
@@ -14,7 +13,7 @@ class Utility:
             'ELSE': self.handle_else_msg,
             1: self.parse_im_obj,
             2: self.parse_im_voice,
-            3:  self.parse_im_obj,
+            3: self.parse_im_obj,
             5: self.parse_im_file,
             12: self.parse_im_obj,
             32: self.parse_im_video,
@@ -25,13 +24,11 @@ class Utility:
         self.time_div = '<div style="text-align:center"><span class="time_container">{timestamp}</span></div>'
         self.rightd_div = '<div class="rightd"><div class="main"><div class="speech right">{content}</div></div><div class="rightimg">{name}</div></div>'
         self.lefttd_div = '<div class="leftd"><div class="leftimg">{name}</div><div class="main"><div class="speech left">{content}</div></div></div>'
-  
-    def handle_else_msg(self, else_msg):
-        print("cant share {}".format(else_msg))
+
+    def handle_else_msg(self):
         return CANT_SHARE_MSG
 
-    def no_type_error(self, else_msg):
-        print("error share {}".format(else_msg))
+    def no_type_error(self):
         raise ValueError
 
     def handle_sharemsg_timeinterval(self, msg):
@@ -67,10 +64,8 @@ class Utility:
         _keys = msg.keys()
         if 'n' not in _keys or 'b' not in _keys or 's' not in _keys or 'd' not in _keys:
             return msg
-        
-        _msg_type = msg.get('t', 'ELSE')
-        _handle_type = self.MESSAGE_TYPE.get(_msg_type, self.MESSAGE_TYPE.get('ELSE'))
-        result = _handle_type(msg.get('b', 'ELSE'))
+
+        result = self.MESSAGE_TYPE[msg.get('t', 'ELSE')](msg.get('b', 'ELSE'))
 
         return result
 
@@ -99,7 +94,7 @@ class Utility:
         _pattern = re.compile(r'(\[obj type="([\w]+)" value="([\S]+)"([\w|=|\s|.]+)?\])')
         arr = _pattern.findall(body)
         # for x in range(len(arr)):
-        x= ''
+        x = ''
         if not len(arr):
             return body
         for item in arr:
@@ -119,7 +114,7 @@ class Utility:
                 emo = emo_1[1].split('=')
                 value_a = value.split('[')
                 value_b = value_a[1].split(']')
-                body = body.replace(all_obj, '<img src="https://qt.qunar.com/file/v2/emo/d/e/' + emo[1] + '/' + value_b[
+                body = body.replace(all_obj, '<img src="{file_url}/file/v2/emo/d/e/'.format(file_url=FILE_URL) + emo[1] + '/' + value_b[
                     0] + '/org" />')
         return body
 
@@ -129,7 +124,8 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '<a href="' + self.gen_url(_body.get('HttpUrl')) + '">下载文件:' + _body.get('FileName') + ',文件大小:' + _body.get('FileSize') + '</a>'
+        body = '<a href="' + self.gen_url(_body.get('HttpUrl')) + '">下载文件:' + _body.get(
+            'FileName') + ',文件大小:' + _body.get('FileSize') + '</a>'
         return body
 
     def parse_im_voice(self, body):
@@ -138,18 +134,9 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Seconds'] + '秒,点击下载</a>'
+        body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Secondes'] + '秒,点击下载</a>'
         return body
 
-    # def parse_im_emotion(self,body):
-    #     _pattern = re.compile(r'\[obj type="([\w]+)" value="([\S]+)"([\w|=|\s|.]+)?\]')
-    #     arr = _pattern.findall(body)
-    #     if arr:
-    
-    #         all_obj = arr[0]
-    #
-    #     body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Secondes'] + '秒,点击下载</a>'
-    #     return body
 
     def parse_im_video(self, body):
         try:
@@ -185,5 +172,3 @@ class Utility:
                _body['title'] + '</p><p class="line2">' + desc + '</p></div></div></a>'
 
         return body
-
-

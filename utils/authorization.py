@@ -33,12 +33,12 @@ author_log.info("REIDS START SUCCESS")
 g_user = ''
 
 
-def check_ckey(ckey,puser = ''):
+def check_ckey(ckey,puser=''):
     global g_user
     if not isinstance(ckey, str):
         ckey = str(ckey)
     if len(ckey) <= 0:
-        return False, None
+        return False
     try:
         ckey_parse = base64.b64decode(ckey).decode('utf-8')
         result = parse_qs(ckey_parse)
@@ -46,13 +46,24 @@ def check_ckey(ckey,puser = ''):
         user = result.get('u')
         if isinstance(user, list):
             user = user[0]
+
+        # 判断ckey中的user是否和传入的user相同
         if puser:
-            if user != puser:
-                return False, user
+            if '@' in puser:
+                if user != puser.split('@')[0]:
+                    return False, user
+            else:
+                if user != puser:
+                    return False, user
         # domain = result['d'][0]
-        domain = result.get('d')
-        if isinstance(domain, list):
-            domain = domain[0]
+        __domain = result.get('d')
+        if isinstance(__domain, list):
+            if len(__domain) == 1:
+                __domain = __domain[0]
+            else:
+                author_log.warning('MORE THAN 1 DOMAIN FOUND {} '.format(__domain))
+                __domain = __domain[0]
+
         if not g_user:
             g_user = user
         # time = result['t'][0]
@@ -62,33 +73,33 @@ def check_ckey(ckey,puser = ''):
         tar = result['k']
         if isinstance(tar, list):
             tar = tar[0]
-        if domain == r_domain:
-            user_keys = redis_cli.hkeys(user)
-            if isinstance(user_keys, list):
-                for i in user_keys:
-                    i = str(i) + str(_time)
-                    i = md5(i)
-                    i = str(i).upper()
-                    if i == str(tar):
-                        if g_user != user:
-                            g_user = user
-                            author_log.info('user = {} , ckey = {} login success!'.format(result['u'][0], ckey))
-                        return True, user
-            elif isinstance(user_keys, (str,int)):
-                i = str(user_keys) + str(_time)
+        if puser and '@' in puser:
+            if __domain != puser.split('@')[1]:
+                author_log.error("unknown domain {} get for user {}".format(result['d'][0], user))
+                return False, user
+        user_keys = redis_cli.hkeys(user)
+        if isinstance(user_keys, list):
+            for i in user_keys:
+                i = str(i) + str(_time)
                 i = md5(i)
                 i = str(i).upper()
                 if i == str(tar):
                     if g_user != user:
                         g_user = user
                         author_log.info('user = {} , ckey = {} login success!'.format(result['u'][0], ckey))
-                return True, user
-            else:
-                return False, user
-            return False, user
+                    return True, user + '@' + __domain 
+        elif isinstance(user_keys, (str,int)):
+            i = str(user_keys) + str(_time)
+            i = md5(i)
+            i = str(i).upper()
+            if i == str(tar):
+                if g_user != user:
+                    g_user = user
+                    author_log.info('user = {} , ckey = {} login success!'.format(result['u'][0], ckey))
+            return True, user + '@' + domain
         else:
-            author_log.error("unknown domain {} get for user {}".format(result['d'][0], user))
             return False, user
+        return False, user
     except Exception as e:
         author_log.exception("CKEY CHECK FAILED")
         return False, ''
@@ -103,3 +114,5 @@ def md5(string):
 def md5GBK(string1):
     m = hashlib.md5(string1.encode(encoding='gb2312'))
     return m.hexdigest()
+
+

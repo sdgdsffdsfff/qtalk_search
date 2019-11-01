@@ -20,8 +20,6 @@ def timeduration(func):
     return wrapper
 
 
-import random
-import time
 
 
 def timerfunc(func):

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+from enum import Enum
+# from conf.constants import r_domain
+
 from utils.logger_conf import configure_logger
 from utils.get_conf import get_logger_file, get_config_file
 
@@ -29,12 +32,9 @@ QTALK_OPEN_PUBLIC_VCARD = 8  # 打开公众号名片
 ckey验证用
 """
 if_redis_sentinel = config['redis'].getboolean('if_sentinel')
-r_domain = config['qtalk']['domain']
 is_check_ckey = config['qtalk'].getboolean('ckey_check')
-single_portrait = config['sharemsg']['file_url'] + config['qtalk']['single_portrait']
-muc_portrait = config['sharemsg']['file_url'] + config['qtalk']['muc_portrait']
-# service_host = config['qtalk']['app_host']
-# service_port = config['qtalk']['app_port']
+single_portrait = config['qtalk']['single_portrait']
+muc_portrait = config['qtalk']['muc_portrait']
 
 if if_redis_sentinel:
     pre_rs_hosts = config['redis_sentinel']['hosts'].split(',')
@@ -62,7 +62,6 @@ group_id = config['kafka']['group_id']
 """
 获取pinyin-中文
 """
-# if_lookback=config['lookback']['lookback']
 if_name_id = config['kafka']['consumer_broker_params']
 
 TYPE_REGISTER = {
@@ -88,3 +87,21 @@ if if_lookback and if_es:
     es_connstr = config['elasticsearch']['saas']
 else:
     es_connstr = ''
+# FILTER_PATH = ['', 'timed_out', 'took', 'hits.max_score', 'hits.hits._score', 'hits.hits._source.msg']
+AGG_NEED =['raw_body','msgid','from','to','realfrom','realto','extendinfo','date','time','mtype']
+FILTER_PATH = ['hits.total', 'hits.hits._source.raw_body', 'hits.hits._source.msgid', 'hits.hits._source.from',
+               'hits.hits._source.to', 'hits.hits._source.realfrom', 'hits.hits._source.realto',
+               'hits.hits._source.extendinfo', 'hits.hits._source.date', 'hits.hits._source.time',
+               'hits.hits._source.mtype']
+
+#AGG_FILTER_PATH = ['aggregations.top_to.buckets.top_to_hits.hits.total',
+#                   'aggregations.top_to.buckets.top_to_hits.hits.hits._source']
+AGG_FILTER_PATH = ['aggregations.conversation_aggs.buckets']
+FILE_FILTER = ['hits.total', 'hits.hits._index','hits.hits._type', 'hits.hits._source.FILEID', 'hits.hits._source.FILEMD5',
+               'hits.hits._source.FileName', 'hits.hits._source.FileSize', 'hits.hits._source.HttpUrl', 'hits.hits._id']
+
+
+MUC_SPLIT_SIZE = 400
+REGEX_TAG = '_'
+
+SIMILARITY_THRESHOLD = 0.7

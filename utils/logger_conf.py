@@ -29,6 +29,8 @@ logger_register = {
     'updatecheck': '',
     'cache': '',
     'sql': '',
+    'jsontools': '',
+    'rtc': '',
     'error': ''
 }
 for _k, _v in logger_register.items():
@@ -123,6 +125,24 @@ def configure_logger(name, log_path=''):
                 'maxBytes': 10 * 1024 * 1024,
                 'backupCount': 3
             },
+            'jsontools': {
+                'level': log_level,
+                'class': 'logging.handlers.RotatingFileHandler',
+                'formatter': 'default',
+                'filename': logger_register['jsontools'],
+                'encoding': 'utf-8',
+                'maxBytes': 10 * 1024 * 1024,
+                'backupCount': 3
+            },
+            'rtc': {
+                'level': log_level,
+                'class': 'logging.handlers.RotatingFileHandler',
+                'formatter': 'default',
+                'filename': logger_register['rtc'],
+                'encoding': 'utf-8',
+                'maxBytes': 10 * 1024 * 1024,
+                'backupCount': 3
+            },
         },
         'loggers': {
             'root': {
@@ -153,6 +173,14 @@ def configure_logger(name, log_path=''):
             'sql': {
                 'level': log_level,
                 'handlers': ['console', 'sql', 'error']
+            },
+            'rtc': {
+                'level': log_level,
+                'handlers': ['console', 'rtc', 'error']
+            },
+            'jsontools': {
+                'level': log_level,
+                'handlers': ['console', 'jsontools', 'error']
             }
         },
         'disable_existing_loggers': False

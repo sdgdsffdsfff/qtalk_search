@@ -20,6 +20,8 @@ else:
     r_port = config['cache_redis']['port']
     r_password = config['cache_redis']['password']
 
+MAX_BUFFER = int(config['cache']['max_buffer'])
+
 SINGLE_KEY = 'searchSingle'  # 指聊天记录 key + '_' + user_id
 MUC_KEY = 'searchMuc'
 SINGLE_TRACE_KEY = 'singleTrace'  # 指聊天频次
@@ -27,3 +29,9 @@ MUC_TRACE_KEY = 'mucTrace'
 
 SINGLE_CACHE = 'singleCache'
 MUC_CACHE = 'mucCache'
+USER_MUCS = 'userMucs'
+ALL_USER_DATA_CACHE = 'allUserData'
+
+LOOKBACK_SINGLE_CACHE = 'hsSingle'
+LOOKBACK_MUC_CACHE = 'hsMuc'
+LOOKBACK_AGG_CACHE = 'hsAgg'
