@@ -9,8 +9,8 @@ from service.sharemsg.sharemsg import sharemsg_blueprint
 from service.search.search import search_blueprint
 from service.updatecheck.updatecheck import updatecheck_blueprint
 from service.jsontools.json_tools import jsontools_blueprint
-from service.videos.apprtc import rtc_blueprint
-#from service.webparser.parser import parser_blueprint
+
+# from service.webparser.parser import parser_blueprint
 
 PY_VERSION = re.findall('^([\d\.].*?)\s', sys.version)[0]
 conf.constants.PY_VERSION = PY_VERSION
@@ -21,8 +21,9 @@ app.register_blueprint(sharemsg_blueprint, url_prefix='/')
 app.register_blueprint(search_blueprint, url_prefix='/')
 app.register_blueprint(updatecheck_blueprint, url_prefix='/')
 app.register_blueprint(jsontools_blueprint, url_prefix='/')
-app.register_blueprint(rtc_blueprint, url_prefix='/rtc',static_url_path='/rtc/r/static')
-#app.register_blueprint(parser_blueprint, url_prefix='/')
+
+
+# app.register_blueprint(parser_blueprint, url_prefix='/')
 
 
 @app.route('/healthcheck.html', methods=['GET'])

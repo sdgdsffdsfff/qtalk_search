@@ -15,7 +15,7 @@ from conf.search_params_define import *
 from utils.dsl import DSL
 from utils.time_utils import TimeUtils
 from utils.common_utils import TextHandler
-# from service.search.lookback_es import LookbackLib
+from service.search.lookback_es import LookbackLib
 import utils.common_sql
 from utils.redis_utils import RedisUtil
 
