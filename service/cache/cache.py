@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 import json
 from kafka import KafkaConsumer
-# from xml.etree import ElementTree as eTree
 from utils.redis_utils import redis_cli
 from conf.constants import *
 from conf.search_params_define import *
@@ -30,38 +29,23 @@ def add_queue():
             if message.key == "chat":
                 from_host = value['from_host']
                 to_host = value['to_host']
-                if from_host != domain or to_host != domain:
+                if isinstance(domain,str) and from_host != domain or to_host != domain:
                     continue
-                m_from = value['m_from']
-                m_to = value['m_to']
-                # m_body = value.get("m_body")
-                # msg = eTree.fromstring(m_body)
-                # m_type = msg.get('type')
-                # m_body = msg.find("body")
-                # if m_type not in ["chat"]:
-                #     continue
+                m_from = value['m_from'] + '@' + from_host
+                m_to = value['m_to'] + '@' + to_host
                 handle_redis(key=SINGLE_KEY, field=m_from, value=m_to)
                 handle_redis(key=SINGLE_TRACE_KEY, field=m_from, value=m_to)
-
             elif message.key == "groupchat":
-                jid = value['realfrom'] if "realfrom" in value else value['sendjid']
+                sender = value['realfrom'] if "realfrom" in value else value['sendjid']
                 user_list = value['userlist']
                 room_host = value['room_host'].replace('conference.', '')
-                from_host = jid.split('@')[1]
-                if from_host != domain or room_host != domain:
+                from_host = sender.split('@')[1]
+                if isinstance(domain,str) and from_host != domain or room_host != domain:
                     continue
-                # msg = eTree.fromstring(value.get('packet'))
-                # type = msg['type']
-                # if type not in ['groupchat']:
-                #     continue
-
-                ## 此处加入domain会导致每个用户的缓存长度高达 50 * 20 , 如果遇到性能瓶颈应考虑只缓存当前域
-                # 去掉domain 占用过多空间
-                # m_to = value.get('muc_room_name') + '@' + value.get('room_host')
-                m_to = value.get('muc_room_name')
-
+                m_to = value['muc_room_name'] + '@' + value['room_host']
                 handle_redis(key=MUC_KEY, field=user_list, value=m_to)
-                handle_redis(key=MUC_TRACE_KEY, field=user_list, value=m_to)
+                handle_redis(key=MUC_TRACE_KEY, field=sender, value=m_to)
+
             else:
                 continue
         except Exception as e:
@@ -86,32 +70,28 @@ def handle_redis(key, field, value):
                 if value in contacts:
                     contacts.remove(value)
                 redis_cli.lpush(_k, *contacts[::-1], value)
-                redis_cli.ltrim(_k, start=0, end=19)
+                redis_cli.ltrim(_k, start=0, end=MAX_BUFFER - 1)
             elif key == SINGLE_TRACE_KEY:
                 redis_cli.zincrby(name=_k, amount=1, value=value)
 
     elif key in (MUC_KEY, MUC_TRACE_KEY):
-        if not isinstance(field, list) or not isinstance(value, str):
-            raise TypeError("WRONG FIELD {field} OR VALUE {value} TYPE".format(field=field, value=value))
-        for user in field:
-            # 命名规则如果哪一天改成允许@了 此处就会原地爆炸
-            if '@' in user:
-                _user = user.split('@')
-                if _user[1] != r_domain:
-                    return
-                _u = _user[0]
-            else:
+        if key == MUC_TRACE_KEY:
+            if not isinstance(field, str) or not isinstance(value, str):
+                raise TypeError("WRONG FIELD {field} OR VALUE {value} TYPE".format(field=field, value=value))
+            _k = key + '_' + field
+            redis_cli.zincrby(name=_k, amount=1, value=value)
+        elif key == MUC_KEY:
+            if not isinstance(field, list) or not isinstance(value, str):
+                raise TypeError("WRONG FIELD {field} OR VALUE {value} TYPE".format(field=field, value=value))
+            for user in field:
                 _u = user
-            _k = key + '_' + _u
-            if key == MUC_KEY:
+                _k = key + '_' + _u
                 contacts = redis_cli.lrange(name=_k, start=0, end=-1)
                 redis_cli.delete(_k)
                 if value in contacts:
                     contacts.remove(value)
                 redis_cli.lpush(_k, *contacts[::-1], value)
-                redis_cli.ltrim(_k, start=0, end=19)
-            elif key == MUC_TRACE_KEY:
-                redis_cli.zincrby(name=_k, amount=1, value=value)
+                redis_cli.ltrim(_k, start=0, end=MAX_BUFFER - 1)
     else:
         return
 

@@ -17,9 +17,6 @@ meeting_logger = configure_logger('meetingdetail', log_path)
 meeting_blueprint = Blueprint('meeting', __name__, template_folder='../../templates', static_folder='../../static')
 
 
-# meeting_blueprint = Blueprint('meeting', __name__)
-
-
 def authorization(func):
     def wrapper(*args, **kw):
         ckey = ''
@@ -161,5 +158,3 @@ def ajax_help(user_id, ckey):
     response = requests.post(url=action_onlineUrl, json=request.json, cookies=ckey_cookie, timeout=10)
     return response.content  # 不知道是不是应该返回这个
 
-# if __name__ == '__main__':
-#     meeting.run(host=service_host, port=service_port)

@@ -1,4 +1,3 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-__author__ = 'dan.liu'
-
+__author__ = 'jingyu.he'
