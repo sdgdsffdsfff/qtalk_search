@@ -15,20 +15,28 @@ from conf.search_params_define import *
 from utils.dsl import DSL
 from utils.time_utils import TimeUtils
 from utils.common_utils import TextHandler
-from service.search.lookback_es import LookbackLib
+# from service.search.lookback_es import LookbackLib
 import utils.common_sql
 from utils.redis_utils import RedisUtil
 
 log_path = get_logger_file('search.log')
 lookback_logger = configure_logger('search', log_path)
-if if_lookback and if_es:
+
+if if_es:
     lookback_logger.info("USING ES LOOKBACK..")
     from service.search.lookback_es import LookbackLib
-elif if_lookback and not if_es:
+else:
     lookback_logger.info("USING SQL LOOKBACK..")
     from service.search.lookback_sql import LookbackLib
-else:
-    Lookback = None
+
+# if if_lookback and if_es:
+#     lookback_logger.info("USING ES LOOKBACK..")
+#     from service.search.lookback_es import LookbackLib
+# elif if_lookback and not if_es:
+#     lookback_logger.info("USING SQL LOOKBACK..")
+#     from service.search.lookback_sql import LookbackLib
+# else:
+#     Lookback = None
 
 if utils.common_sql.if_async:
     lookback_logger.info('USING AYNC USERLIB FOR LOOKBACK')
