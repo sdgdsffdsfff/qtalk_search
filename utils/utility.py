@@ -6,6 +6,7 @@ import json
 import time
 from conf.sharemsg_params_define import *
 
+
 class Utility:
     def __init__(self):
         self.MESSAGE_TYPE = {
@@ -114,8 +115,10 @@ class Utility:
                 emo = emo_1[1].split('=')
                 value_a = value.split('[')
                 value_b = value_a[1].split(']')
-                body = body.replace(all_obj, '<img src="{file_url}/file/v2/emo/d/e/'.format(file_url=FILE_URL) + emo[1] + '/' + value_b[
-                    0] + '/org" />')
+                body = body.replace(all_obj,
+                                    '<img src="{file_url}/file/v2/emo/d/e/'.format(file_url=FILE_URL) + emo[1] + '/' +
+                                    value_b[
+                                        0] + '/org" />')
         return body
 
     def parse_im_file(self, body):
@@ -134,9 +137,8 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Secondes'] + '秒,点击下载</a>'
+        body = '<a href="https://qt+qunar+com/' + _body.get("HttpUrl") + '">语音:' + _body.get("Secondes") + '秒,点击下载</a>'
         return body
-
 
     def parse_im_video(self, body):
         try:
@@ -144,8 +146,8 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '点击图片下载视频:' + _body['FileSize'] + '时长:' + _body['Duration'] + '<br><a href="' + self.gen_url(
-            _body['FileUrl']) + '"><img src="' + self.gen_url(_body['ThumbUrl']) + '" /></a>'
+        body = '点击图片下载视频:' + _body.get("FileSize") + '时长:' + _body.get("Duration") + '<br><a href="' + self.gen_url(
+            _body.get("FileUrl")) + '"><img src="' + self.gen_url(_body.get("ThumbUrl")) + '" /></a>'
         return body
 
     def parse_im_location(self, body):
@@ -154,9 +156,9 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '点击图片查看位置:' + _body['adress'] + '<br><a href="http://api.map.baidu.com/marker?location=' + _body[
-            'latitude'] + ',' + _body['longitude'] + '&title=我的位置&content=' + _body[
-                   'adress'] + '&output=html"><img src="' + self.gen_url(_body['fileUrl']) + '" /></a>'
+        body = '点击图片查看位置:' + _body.get("adress") + '<br><a href="http://api.map.baidu.com/marker?location=' + _body.get(
+            "latitude") + ',' + _body.get("longitude") + '&title=我的位置&content=' + _body.get(
+            "adress") + '&output=html"><img src="' + self.gen_url(_body.get("fileUrl")) + '" /></a>'
         return body
 
     def parse_im_666card(self, body):
@@ -165,10 +167,10 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        desc = '点击查看全文' if not _body['desc'] else _body['desc']
-        img = self.gen_url(_body['img']) if 'img' in body else 'default.png'
+        desc = '点击查看全文' if not _body.get("desc") else _body.get("desc")
+        img = self.gen_url(_body.get("img")) if 'img' in body else 'default.png'
         body = '<a href="' + _body[
             'linkurl'] + '"><div class="g-flexbox"><div class="extleft">' + '<img src="' + img + '" alt="../{{default.png}}"/></div><div class="flex"><p class="line">' + \
-               _body['title'] + '</p><p class="line2">' + desc + '</p></div></div></a>'
+               _body.get("title") + '</p><p class="line2">' + desc + '</p></div></div></a>'
 
         return body

@@ -157,6 +157,8 @@ class UserLib:
         conn = self.conn
         sql = """select b.username || '@' || b.host as user_id, user_name, pinyin, b.url,a.department,b.mood from host_users a left join vcard_version b on a.user_id = b.username where a.hire_flag = 1 and a.host_id = ANY(select id from host_info where host = %(domain)s )"""
         cursor = conn.cursor()
+        # if isinstance(domain, str):
+        #     domain = domain.encode('utf-8')
         cursor.execute(sql, {'domain': domain})
         rs = cursor.fetchall()
         for row in rs:
@@ -268,7 +270,8 @@ class UserLib:
                     # result = set(filter(lambda x: key in x['qtalkname'], __user_data))
                     result = merge_list_of_dict(list((filter(lambda x: key in x['qtalkname'], __user_data))))
 
-                elif chinese_pattern.findall(formulate_text(key)) and chinese_pattern.sub('', formulate_text(key)):  # 中英符号结合
+                elif chinese_pattern.findall(formulate_text(key)) and chinese_pattern.sub('', formulate_text(
+                        key)):  # 中英符号结合
                     key = formulate_text(key)
                     _r1 = list(filter(lambda x: key in formulate_text(x['name']), __user_data))  # 何靖宇
                     _r2 = list(filter(lambda x: get_similar_bool(a=key, b=x['name']), __user_data))
@@ -281,7 +284,7 @@ class UserLib:
                     sql_logger.debug('转换后 {}'.format(key))
                     _r3 = list(filter(lambda x: key in formulate_text(x['pinyin']), __user_data))
                     result = merge_list_of_dict(_r1, _r2, _r3)
-                else: # 纯英文
+                else:  # 纯英文
                     sql_logger.debug('修正前 {}'.format(key))
                     key = formulate_text(key)
                     sql_logger.debug('修正为标点 {}'.format(key))
@@ -1596,7 +1599,8 @@ class AsyncLib:
                     # result = set(filter(lambda x: key in x['qtalkname'], __user_data))
                     result = merge_list_of_dict(list((filter(lambda x: key in x['qtalkname'], __user_data))))
 
-                elif chinese_pattern.findall(formulate_text(key)) and chinese_pattern.sub('', formulate_text(key)):  # 中英符号结合
+                elif chinese_pattern.findall(formulate_text(key)) and chinese_pattern.sub('', formulate_text(
+                        key)):  # 中英符号结合
                     key = formulate_text(key)
                     _r1 = list(filter(lambda x: key in formulate_text(x['name']), __user_data))  # 何靖宇
                     _r2 = list(filter(lambda x: get_similar_bool(a=key, b=x['name']), __user_data))
@@ -1611,7 +1615,7 @@ class AsyncLib:
                     sql_logger.debug('转换后 {}'.format(key))
                     _r3 = list(filter(lambda x: key in formulate_text(x['pinyin']), __user_data))
                     result = merge_list_of_dict(_r1, _r2, _r3)
-                else: # 纯英文
+                else:  # 纯英文
                     sql_logger.debug('修正前 {}'.format(key))
                     key = formulate_text(key)
                     sql_logger.debug('修正为标点 {}'.format(key))
