@@ -1,6 +1,6 @@
 #### 目前搜索已升级为python3.7,包含历史记录搜索功能,tag为v3.0(支持多域). 需要openssl version >= 1.02
 #### 请执行 git pull && 编辑 ./qtalk_search/conf/configure.ini && ./qtalk_search/runme.sh
-#### 以下为 v1.0 部署步骤 
+#### 以下为部署步骤 
 
 #### ***搜索系统***
 --------------------------------------------------------------------------------
@@ -26,12 +26,16 @@
         3)export PYTHONPATH=path/to/project/qtalk_search:$PYTHONPATH
         4)cd path/to/project/qtalk_search
         5)unlink /tmp/supervisor.sock
-        5)supervisord -c conf/supervisor.conf
+        6)supervisord -c conf/supervisor.conf 
         7)supervisorctl -c conf/supervisor.conf reload
        
 #### *确认服务开启：*:
-        确保日志无报错
-        tail -f log/access.log
+        1.确认服务开启成功:
+           tail -f log/supervisor.log
+        2.确保日志无报错
+           tail -f log/access.log
+        3.查看搜索日志:
+            tail -f log/search.log
 
         
 --------------------------------------------------------------------------------
