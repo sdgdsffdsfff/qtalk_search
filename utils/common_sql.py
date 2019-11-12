@@ -157,8 +157,6 @@ class UserLib:
         conn = self.conn
         sql = """select b.username || '@' || b.host as user_id, user_name, pinyin, b.url,a.department,b.mood from host_users a left join vcard_version b on a.user_id = b.username where a.hire_flag = 1 and a.host_id = ANY(select id from host_info where host = %(domain)s )"""
         cursor = conn.cursor()
-        # if isinstance(domain, str):
-        #     domain = domain.encode('utf-8')
         cursor.execute(sql, {'domain': domain})
         rs = cursor.fetchall()
         for row in rs:
