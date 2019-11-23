@@ -39,3 +39,4 @@ Pods/
 newvenv/*
 venv/*
 configure.ini
+test/*
